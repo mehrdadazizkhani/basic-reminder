@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg: #f8f8f7;
+  --color-surface: #ffffff;
+  --color-border: #e5e5e2;
+  --color-text: #181816;
+  --color-text-muted: #73736d;
+  --color-accent: #5b5bd6;
+}
+
+.dark {
+  --color-bg: #111110;
+  --color-surface: #1a1a18;
+  --color-border: #2a2a27;
+  --color-text: #f5f5f2;
+  --color-text-muted: #a3a39b;
+  --color-accent: #7c7ce8;
+}
+
+/* Hide scrollbar but keep scrolling */
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  scrollbar-width: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+#event-form {
+  scrollbar-width: none;
+}
+
+#event-form::-webkit-scrollbar {
+  scrollbar-width: none;
+}

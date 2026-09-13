@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="public/favicon.ico" />
+    <title>Meeting Hub</title>
+  </head>
+
+  <body
+    class="min-h-screen"
+    style="background-color: var(--color-bg); color: var(--color-text)"
+  >
+    <header
+      class="container mx-auto flex items-center justify-between px-6 py-6 lg:px-10"
+    >
+      <h1 class="text-xl font-semibold tracking-tight">Meeting Hub</h1>
+
+      <button
+        id="theme-toggle"
+        type="button"
+        class="rounded-lg border px-3 py-2 text-sm transition cursor-pointer"
+        style="
+          border-color: var(--color-border);
+          background-color: var(--color-surface);
+          color: var(--color-text);
+        "
+      >
+        <span id="theme-label">System</span>
+      </button>
+    </header>
+
+    <main class="container mx-auto px-6 lg:px-10">
+      <!-- Tabs -->
+      <div
+        class="flex gap-6 border-b"
+        style="border-color: var(--color-border)"
+      >
+        <button
+          id="calendar-tab"
+          type="button"
+          class="border-b-2 px-1 py-3 text-sm font-medium cursor-pointer"
+          style="border-color: var(--color-accent); color: var(--color-accent)"
+        >
+          Calendar
+        </button>
+
+        <button
+          id="schedule-tab"
+          type="button"
+          class="border-b-2 border-transparent px-1 py-3 text-sm font-medium cursor-pointer"
+          style="color: var(--color-text-muted)"
+        >
+          Schedule
+        </button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="py-8">
+        <!-- Calendar -->
+        <section id="calendar-section">
+          <div
+            class="rounded-xl border"
+            style="
+              background-color: var(--color-surface);
+              border-color: var(--color-border);
+            "
+          >
+            <!-- Calendar Header -->
+            <div
+              class="p-5 sticky top-0 z-20"
+              style="
+                background-color: var(--color-surface);
+                border-bottom: 1px solid var(--color-border);
+              "
+            >
+              <!-- Navigation + View Switcher -->
+              <div class="flex flex-wrap items-center justify-between gap-4">
+                <!-- Navigation -->
+                <div class="flex items-center gap-2">
+                  <button
+                    id="prev-button"
+                    type="button"
+                    class="rounded-lg border px-3 py-2 text-sm transition cursor-pointer"
+                    style="
+                      border-color: var(--color-border);
+                      color: var(--color-text);
+                    "
+                  >
+                    Prev
+                  </button>
+
+                  <button
+                    id="today-button"
+                    type="button"
+                    class="rounded-lg border px-3 py-2 text-sm transition cursor-pointer"
+                    style="
+                      border-color: var(--color-border);
+                      color: var(--color-text);
+                    "
+                  >
+                    Today
+                  </button>
+
+                  <button
+                    id="next-button"
+                    type="button"
+                    class="rounded-lg border px-3 py-2 text-sm transition cursor-pointer"
+                    style="
+                      border-color: var(--color-border);
+                      color: var(--color-text);
+                    "
+                  >
+                    Next
+                  </button>
+                </div>
+
+                <!-- View Switcher -->
+                <div
+                  class="flex rounded-lg border p-1"
+                  style="border-color: var(--color-border)"
+                >
+                  <button
+                    id="day-view"
+                    type="button"
+                    class="rounded-md px-3 py-1.5 text-sm cursor-pointer"
+                    style="color: var(--color-text-muted)"
+                  >
+                    Day
+                  </button>
+
+                  <button
+                    id="week-view"
+                    type="button"
+                    class="rounded-md px-3 py-1.5 text-sm cursor-pointer"
+                    style="color: var(--color-text-muted)"
+                  >
+                    Week
+                  </button>
+
+                  <button
+                    id="month-view"
+                    type="button"
+                    class="rounded-md px-3 py-1.5 text-sm cursor-pointer"
+                    style="background-color: var(--color-accent); color: white"
+                  >
+                    Month
+                  </button>
+                </div>
+              </div>
+
+              <!-- Calendar Title -->
+              <h2 id="calendar-title" class="mt-6 text-xl font-semibold">
+                September 2026
+              </h2>
+            </div>
+
+            <!-- Calendar Placeholder -->
+            <div
+              id="calendar"
+              class="min-h-32 border-t p-5"
+              style="border-color: var(--color-border)"
+            >
+              Calendar will be here
+            </div>
+          </div>
+        </section>
+
+        <!-- Schedule -->
+        <section id="schedule-section" class="hidden">
+          <div
+            class="rounded-xl border"
+            style="
+              background-color: var(--color-surface);
+              border-color: var(--color-border);
+            "
+          >
+            <div class="border-b p-5" style="border-color: var(--color-border)">
+              <h2 class="text-lg font-semibold">Schedule</h2>
+
+              <p class="mt-1 text-sm" style="color: var(--color-text-muted)">
+                Your upcoming schedule
+              </p>
+            </div>
+
+            <div id="schedule-list" class="p-5 space-y-3"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Event Modal -->
+    <div
+      id="event-modal"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+    >
+      <div
+        id="event-modal-content"
+        class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border"
+        style="
+          background-color: var(--color-surface);
+          border-color: var(--color-border);
+        "
+      >
+        <!-- Modal Header -->
+        <div
+          class="flex items-center justify-between border-b p-5"
+          style="border-color: var(--color-border)"
+        >
+          <h2 class="text-lg font-semibold">New Event</h2>
+
+          <button
+            id="close-event-modal"
+            type="button"
+            class="rounded-lg px-2 py-1 text-xl leading-none cursor-pointer"
+            style="color: var(--color-text-muted)"
+          >
+            ×
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <form id="event-form" class="space-y-5 p-5">
+          <!-- Title -->
+          <div>
+            <label for="event-title" class="mb-2 block text-sm font-medium">
+              Title
+            </label>
+
+            <input
+              id="event-title"
+              type="text"
+              class="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+              style="
+                background-color: var(--color-bg);
+                border-color: var(--color-border);
+                color: var(--color-text);
+              "
+            />
+          </div>
+
+          <!-- All Day -->
+          <div class="flex items-center gap-3">
+            <input id="event-all-day" type="checkbox" class="h-4 w-4" />
+
+            <label for="event-all-day" class="text-sm"> All day </label>
+          </div>
+
+          <!-- Start / Finish -->
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="event-start" class="mb-2 block text-sm font-medium">
+                Start
+              </label>
+
+              <input
+                id="event-start"
+                type="datetime-local"
+                class="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+                style="
+                  background-color: var(--color-bg);
+                  border-color: var(--color-border);
+                  color: var(--color-text);
+                "
+              />
+            </div>
+
+            <div>
+              <label for="event-finish" class="mb-2 block text-sm font-medium">
+                Finish
+              </label>
+
+              <input
+                id="event-finish"
+                type="datetime-local"
+                class="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+                style="
+                  background-color: var(--color-bg);
+                  border-color: var(--color-border);
+                  color: var(--color-text);
+                "
+              />
+            </div>
+          </div>
+
+          <!-- Repetition -->
+          <div>
+            <label
+              for="event-repetition"
+              class="mb-2 block text-sm font-medium"
+            >
+              Repetition
+            </label>
+
+            <select
+              id="event-repetition"
+              class="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+              style="
+                background-color: var(--color-bg);
+                border-color: var(--color-border);
+                color: var(--color-text);
+              "
+            >
+              <option value="">Does not repeat</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+
+          <!-- People -->
+          <div>
+            <label class="mb-2 block text-sm font-medium"> People </label>
+
+            <div id="event-people-list" class="mb-2 flex flex-wrap gap-2"></div>
+
+            <div class="flex gap-2">
+              <input
+                id="event-people-input"
+                type="email"
+                placeholder="Email address"
+                class="min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm outline-none"
+                style="
+                  background-color: var(--color-bg);
+                  border-color: var(--color-border);
+                  color: var(--color-text);
+                "
+              />
+
+              <button
+                id="add-event-person"
+                type="button"
+                class="shrink-0 rounded-lg border px-3 py-2 text-sm cursor-pointer"
+                style="
+                  border-color: var(--color-border);
+                  color: var(--color-text);
+                "
+              >
+                Add
+              </button>
+            </div>
+          </div>
+
+          <!-- Meet -->
+          <div>
+            <label for="event-meet" class="mb-2 block text-sm font-medium">
+              Meet
+            </label>
+
+            <input
+              id="event-meet"
+              type="text"
+              placeholder="Meeting link"
+              class="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+              style="
+                background-color: var(--color-bg);
+                border-color: var(--color-border);
+                color: var(--color-text);
+              "
+            />
+          </div>
+
+          <!-- Location -->
+          <div>
+            <label for="event-location" class="mb-2 block text-sm font-medium">
+              Location
+            </label>
+
+            <input
+              id="event-location"
+              type="text"
+              class="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+              style="
+                background-color: var(--color-bg);
+                border-color: var(--color-border);
+                color: var(--color-text);
+              "
+            />
+          </div>
+
+          <!-- Label -->
+          <div>
+            <label class="mb-2 block text-sm font-medium"> Label </label>
+
+            <div id="event-labels" class="grid grid-cols-4 gap-2">
+              <button
+                type="button"
+                data-label="blue"
+                class="event-label h-8 rounded-md border-2 cursor-pointer"
+                style="background-color: #3b82f6; border-color: transparent"
+                aria-label="Blue"
+              ></button>
+
+              <button
+                type="button"
+                data-label="purple"
+                class="event-label h-8 rounded-md border-2 cursor-pointer"
+                style="background-color: #8b5cf6; border-color: transparent"
+                aria-label="Purple"
+              ></button>
+
+              <button
+                type="button"
+                data-label="pink"
+                class="event-label h-8 rounded-md border-2 cursor-pointer"
+                style="background-color: #ec4899; border-color: transparent"
+                aria-label="Pink"
+              ></button>
+
+              <button
+                type="button"
+                data-label="red"
+                class="event-label h-8 rounded-md border-2 cursor-pointer"
+                style="background-color: #ef4444; border-color: transparent"
+                aria-label="Red"
+              ></button>
+
+              <button
+                type="button"
+                data-label="orange"
+                class="event-label h-8 rounded-md border-2 cursor-pointer"
+                style="background-color: #f97316; border-color: transparent"
+                aria-label="Orange"
+              ></button>
+
+              <button
+                type="button"
+                data-label="yellow"
+                class="event-label h-8 rounded-md border-2 cursor-pointer"
+                style="background-color: #eab308; border-color: transparent"
+                aria-label="Yellow"
+              ></button>
+
+              <button
+                type="button"
+                data-label="green"
+                class="event-label h-8 rounded-md border-2 cursor-pointer"
+                style="background-color: #22c55e; border-color: transparent"
+                aria-label="Green"
+              ></button>
+
+              <button
+                type="button"
+                data-label="gray"
+                class="event-label h-8 rounded-md border-2 cursor-pointer"
+                style="background-color: #6b7280; border-color: transparent"
+                aria-label="Gray"
+              ></button>
+            </div>
+
+            <input id="event-label" type="hidden" value="blue" />
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label
+              for="event-description"
+              class="mb-2 block text-sm font-medium"
+            >
+              Description
+            </label>
+
+            <textarea
+              id="event-description"
+              rows="4"
+              class="w-full resize-none rounded-lg border px-3 py-2 text-sm outline-none"
+              style="
+                background-color: var(--color-bg);
+                border-color: var(--color-border);
+                color: var(--color-text);
+              "
+            ></textarea>
+          </div>
+
+          <!-- Drive -->
+          <div>
+            <label for="event-drive" class="mb-2 block text-sm font-medium">
+              Drive
+            </label>
+
+            <input
+              id="event-drive"
+              type="url"
+              placeholder="Drive link"
+              class="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+              style="
+                background-color: var(--color-bg);
+                border-color: var(--color-border);
+                color: var(--color-text);
+              "
+            />
+          </div>
+
+          <!-- Actions -->
+          <div
+            class="flex justify-end gap-2 border-t pt-5"
+            style="border-color: var(--color-border)"
+          >
+            <button
+              id="cancel-event"
+              type="button"
+              class="rounded-lg border px-4 py-2 text-sm cursor-pointer"
+              style="
+                border-color: var(--color-border);
+                color: var(--color-text);
+              "
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              class="rounded-lg px-4 py-2 text-sm font-medium text-white cursor-pointer"
+              style="background-color: var(--color-accent)"
+            >
+              Create Event
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Event Details Modal -->
+    <div
+      id="event-details-modal"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-lg rounded-xl border"
+        style="
+          background-color: var(--color-surface);
+          border-color: var(--color-border);
+        "
+      >
+        <div id="event-details-label-bar" class="h-2 w-full"></div>
+        <div
+          class="flex items-center justify-between border-b p-5"
+          style="border-color: var(--color-border)"
+        >
+          <h2 id="event-details-title" class="text-lg font-semibold">Event</h2>
+
+          <button
+            id="close-event-details"
+            type="button"
+            class="rounded-lg px-2 py-1 text-xl leading-none cursor-pointer"
+            style="color: var(--color-text-muted)"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="space-y-5 p-5">
+          <div>
+            <div
+              class="text-xs font-medium"
+              style="color: var(--color-text-muted)"
+            >
+              Date
+            </div>
+
+            <div id="event-details-date" class="mt-1 text-sm"></div>
+          </div>
+
+          <div>
+            <div
+              class="text-xs font-medium"
+              style="color: var(--color-text-muted)"
+            >
+              People
+            </div>
+
+            <div id="event-details-people" class="mt-1 text-sm"></div>
+          </div>
+
+          <div>
+            <div
+              class="text-xs font-medium"
+              style="color: var(--color-text-muted)"
+            >
+              Meet
+            </div>
+
+            <div id="event-details-meet" class="mt-1 break-all text-sm"></div>
+          </div>
+
+          <div>
+            <div
+              class="text-xs font-medium"
+              style="color: var(--color-text-muted)"
+            >
+              Location
+            </div>
+
+            <div id="event-details-location" class="mt-1 text-sm"></div>
+          </div>
+
+          <div>
+            <div
+              class="text-xs font-medium"
+              style="color: var(--color-text-muted)"
+            >
+              Description
+            </div>
+
+            <div
+              id="event-details-description"
+              class="mt-1 whitespace-pre-wrap text-sm"
+            ></div>
+          </div>
+
+          <div>
+            <div
+              class="text-xs font-medium"
+              style="color: var(--color-text-muted)"
+            >
+              Drive
+            </div>
+
+            <div id="event-details-drive" class="mt-1 break-all text-sm"></div>
+          </div>
+
+          <div
+            class="flex justify-between border-t pt-5"
+            style="border-color: var(--color-border)"
+          >
+            <button
+              id="delete-event-button"
+              type="button"
+              class="rounded-lg px-4 py-2 text-sm font-medium cursor-pointer"
+              style="color: #ef4444"
+            >
+              Delete
+            </button>
+
+            <div class="flex gap-2">
+              <button
+                id="edit-event-button"
+                type="button"
+                class="rounded-lg px-4 py-2 text-sm font-medium text-white cursor-pointer"
+                style="background-color: var(--color-accent)"
+              >
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating New Event Button -->
+    <button
+      id="new-event-button"
+      type="button"
+      class="fixed bottom-6 cursor-pointer right-6 z-40 rounded-lg px-4 py-3 text-sm font-medium text-white shadow-lg transition hover:opacity-90"
+      style="background-color: var(--color-accent)"
+    >
+      +
+    </button>
+    <footer class="flex gap-2 justify-center items-center h-20">
+      <p style="color: var(--color-text)">Created by</p>
+      <a
+        style="color: var(--color-accent)"
+        href="https://www.linkedin.com/in/zahra-taghavi-79a636168/"
+        target="_blank"
+        >Zahra Taghavi</a
+      >
+    </footer>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
